@@ -1,0 +1,171 @@
+.pubrec .thumbnail {position: relative;width: 20px;height: 30px;overflow: hidden;margin-top:0!important;margin-right:4px;}
+.pubrec .thumbnail img {position: absolute;left: 50%;top: 50%;height: 100%;width: auto;-webkit-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);transform: translate(-50%,-50%);}
+.pubrec .thumbnail img.portrait {width: 100%;height: auto;}
+span.thumbnail-holder{margin-top:0!important;}
+
+.field-shell-aocourses .handle,
+.field-shell-aoresearch .handle,
+.field-shell-aopublications .handle{
+	min-height:25px;
+	width:90%;
+	background-color:#ededed;
+	padding:7px;
+	font-size:14px;
+	border-radius:3px;
+	float:left;
+}
+
+.aocourses .field-shell .remove-fields,
+.aoresearch .field-shell .remove-fields,
+.aopublications .field-shell .remove-fields{margin-left:7px;}
+
+.preview-shell .field-shell-aocourses .handle,
+.preview-shell .field-shell-aoresearch .handle,
+.preview-shell .field-shell-aopublications .handle{display:none;}
+
+.field-shell-aocourses .handle:hover,
+.field-shell-aoresearch .handle:hover,
+.field-shell-aopublications .handle:hover{cursor:move;}
+
+
+
+.form-builder li .themes.multiple-shell label,
+.form-builder li .terms.multiple-shell label {
+	display: inline-block;
+}
+
+.pubrec .separator{margin-left:2px;margin-right:2px;margin-top:0;float:none;}
+.pubrec .abstract,.pubrec #aopublication-image{display:none;}
+
+.profileterms,.abstract-icon{display:inline-block;margin-left:2px;margin-right:2px;}
+
+.handle.ui-sortable-handle .aoresearch .abstract-icon,
+.handle.ui-sortable-handle .aopublications .abstract-icon{margin-top:-4px;}
+
+.abstract-icon:hover{cursor:pointer;}
+
+/* For checkboxes to display in one line */
+.field-item .themes label,
+.field-item .terms label {
+	display: inline;
+	margin-right: 10px;
+}
+
+.themes,
+.terms {
+	clear: left;
+	margin-bottom: 0px;
+}
+
+.field .content-wrap  #aoresearch-funder{display:none;}
+.field .content-wrap  #aoresearch-funder.visible{display:inline-block;}
+
+.pubrec #aopublication-website{font-style:italic;}
+.aopublication-book{margin-right:4px;text-align:right;}
+.pubrec.research #aopublication-year:after{content:"-";}
+#aopublication-status{margin-left:2px;}
+
+/*publication specific*/
+
+
+
+.pubrec strong#aopublication-authors:after{content:".";}
+.pubrec span#aopublication-pagenumbers:not(:empty):before{content:": ";}
+.pubrec span#aopublication-pagenumbers:not(:empty):after{content:".";}
+.pubrec div.year-publisher{display:inline-block !important;/*float:left;*/}
+.pubrec div.year-publisher:before{content:" (";/*margin-top:5px;display:inline-block;float:left;*/}
+.pubrec div.year-publisher:after{content:')';clear:none;/*margin-top:5px;display:inline-block;float:left;*/}
+.pubrec span#aopublication-publisher:not(:empty):before{content:", "}
+.pubrec span#aopublication-bookeds:not(:empty):before{content:"Ed. "}
+.form-builder li div.year-publisher:after{visibility:visible;content:')';clear:none;display:inline-block;}
+.content-wrap{display:none;}
+
+.handle.ui-sortable-handle .pubrec div.year-publisher{float:left;}
+
+.handle.ui-sortable-handle .pubrec div.year-publisher:after{clear:none;margin-top:5px;display:inline-block;float:left;}
+.handle.ui-sortable-handle .pubrec div.year-publisher:before{margin-top:5px;display:inline-block;float:left;margin-left:4px;}
+.handle.ui-sortable-handle .pubrec span.aocourses .abstract-icon,.handle.ui-sortable-handle .pubrec span#aopublication-website, .handle.ui-sortable-handle .pubrec span#aopublication-chapter, .handle.ui-sortable-handle #aopublication-year, .handle.ui-sortable-handle #aopublication-publisher, .handle.ui-sortable-handle #aopublication-pagenumbers{float:none;margin-top:-5px;}
+
+.handle.ui-sortable-handle #aopublication-authors,.handle.ui-sortable-handle #aoresearch-program,
+.handle.ui-sortable-handle #start-date-month,
+.handle.ui-sortable-handle #end-date-month,
+.handle.ui-sortable-handle #aopublication-bookeds,
+.handle.ui-sortable-handle #aoresearch-end-year
+{float:none;margin-top:0;}
+
+/* empty courses */
+.pubrec:not(.empty) #aopublication-website:before{content:'"';}
+.pubrec:not(.empty) #aopublication-website:after{content:'." ';}
+.pubrec.course.empty #aopublication-website:before{content:'Empty Record - Courses need a code and title.';}
+
+/* empty research */
+.pubrec.research.empty #aopublication-website:before{content:'Empty Record - Research needs a title.';}
+.pubrec.research.empty span{display:none;}
+.pubrec.research.empty span.aopublication-website{display:inline-block;}
+
+/* empty publications */
+.pubrec.publication.empty #aopublication-website:before{content:'Empty Record - Publications needs a title.';}
+.pubrec.publication.empty span{display:none;} 
+.pubrec.publication.empty .year-publisher:before, 
+.pubrec.publication.empty .year-publisher:after{content:''}
+.pubrec.publication.empty span.aopublication-website{display:inline-block;}
+
+
+/*Just the fe*/
+.field > .aocourses > .pubrec.empty{display:none;}
+.field > .aoresearch > .pubrec.empty{display:none;}
+.field > .aopublications > .pubrec.empty{display:none;}
+
+.field > .aocourses > .pubrec .thumbnail,
+.field > .aoresearch > .pubrec .thumbnail,
+.field > .aopublications > .pubrec .thumbnail{display:none;}
+
+.field > .aocourses > .pubrec,
+.field > .aoresearch > .pubrec,
+.field > .aopublications > .pubrec{padding-top:5px;padding-bottom:5px;}
+
+.field > .aocourses > .pubrec #aopublication-abstract,
+.field > .aoresearch > .pubrec #aopublication-abstract,
+.field > .aopublications > .pubrec #aopublication-abstract{margin-top:5px;border-top:1px solid #eeeeee;padding:10px;}
+
+.field > .aocourses > .pubrec #aopublication-abstract p:before,
+.field > .aoresearch > .pubrec #aopublication-abstract p:before,
+.field > .aopublications > .pubrec #aopublication-abstract p:before{content:"Abstract: ";font-weight:bold;}
+
+.field > .aocourses > .pubrec .dashicons,
+.field > .aoresearch > .pubrec .dashicons,
+.field > .aopublications > .pubrec .dashicons{color:#2E6EB5;font-size:17px!important;margin-top:2px;}
+
+.field > .aocourses > .pubrec #aopublication-website,
+.field > .aoresearch > .pubrec #aopublication-website,
+.field > .aopublications > .pubrec #aopublication-website{text-decoration:none}
+
+/* Brought over from css*/
+.field-shell-aocourses > span.text-input,
+.field-shell-aopublications > span.text-input,
+.field-shell-aoresearch > span.text-input{
+    font-size:18px;line-height:30px;font-weight:700;color:#002145;
+}
+
+.entry-content  > .aocourses:nth-child(even),
+.entry-content > .aopublications:nth-child(even),
+.entry-content > .aoresearch:nth-child(even){
+    background-color:#f5fbff;border-bottom:1px solid #eeeeee;border-top:1px solid #eeeeee;
+}
+
+.profile-summary .aocourses > .field-shell-multiple .field:nth-child(even),
+.profile-summary .aoresearch > .field-shell-multiple .field:nth-child(even),
+.profile-summary .aopublications > .field-shell-multiple .field:nth-child(even){
+    background-color:#f5fbff;border-bottom:1px solid #eeeeee;border-top:1px solid #eeeeee;
+}
+
+.found{background-color:yellow;}
+.hide-archive #normal-shell > .aopublications,
+.hide-archive #normal-shell > .aoresearch,
+.hide-archive #normal-shell > .aocourses,
+.hide-extratax #normal-shell > .aopublications,
+.hide-extratax #normal-shell > .aoresearch,
+.hide-extratax #normal-shell > .aocourses,
+.hide-intratax #normal-shell > .aopublications,
+.hide-intratax #normal-shell > .aoresearch,
+.hide-intratax #normal-shell > .aocourses{display:none;}
