@@ -1,5 +1,5 @@
 <?php
-Class Profile_CCT_AOResearch extends Profile_CCT_Field {
+class Profile_CCT_AOResearch extends Profile_CCT_Field {
 	var $default_options = array(
 		'type'          => 'aoresearch',
 		'label'         => 'aoresearch',
@@ -13,41 +13,37 @@ Class Profile_CCT_AOResearch extends Profile_CCT_Field {
 		'empty'         => '',
 		'after'         => '',
 	);
-	
 	var $shell = array(
 		'class' => 'aoresearch',
 	);
-	
 	function field() {
 		$profile = Profile_CCT::get_object();
 		$pubtax = $profile->settings['archive']['ao_use_tax'][0];
 		$pubtaxall = $profile->settings['archive']['ao_use_taxall'][0];
-		$this->display_shell( array( 'class' => 'handle') );
-		//Add formatted publication here!! (readonly)
+		$this->display_shell( array( 'class' => 'handle' ) );
 		$this->display();
 		$this->display_end_shell();
-		$this->display_shell( array( 'class' => 'content-wrap') );
+		$this->display_shell( array( 'class' => 'content-wrap' ) );
 		global $post;
-$dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
-		//######## Need to check if setting "Publication Taxonomy" selected (only one) and grab taxonomy
+		$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
 		$terms_array = array();
-		$terms = wp_get_post_terms($post->ID, $pubtax, array("fields" => "slugs"));
-		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-    			foreach ( $terms as $term ) {
-        			$terms_array[] =  $term;
-    			}
+		$terms = wp_get_post_terms( $post->ID, $pubtax, array( 'fields' => 'slugs' ) );
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$terms_array[] = $term;
+			}
 		}
 		$this->input_text( array(
 			'field_id' => 'aoresearch-pi',
 			'label'    => 'Principle Investigator',
 			'size'     => 27,
-			'value'    => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][name][first] .' '.$dataarray[0][name][middle].' '.$dataarray[0][name][last] ),
+			'value'    => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
 		) );
+
 		$this->input_text( array(
 			'field_id' => 'aopublication-authors',
 			'label'    => 'Co-investigators',
 			'size'     => 27,
-			//'value'    => ( ! empty( $this->data['aopublication-authors'] ) ? $this->data['aopublication-authors'] : $dataarray[0][name][first] .' '.$dataarray[0][name][middle].' '.$dataarray[0][name][last] ),
 		) );
 
 		$this->input_text( array(
@@ -91,7 +87,7 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 		$this->input_select( array(
 			'field_id'   => 'start-date-month',
 			'label'      => 'Start Month',
-			'all_fields' => $this->list_of_months()
+			'all_fields' => $this->list_of_months(),
 		) );
 
 		$this->input_select( array(
@@ -104,7 +100,7 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 		$this->input_select( array(
 			'field_id'   => 'end-date-month',
 			'label'      => 'End Month',
-			'all_fields' => $this->list_of_months()
+			'all_fields' => $this->list_of_months(),
 		) );
 
 		$this->input_select( array(
@@ -127,35 +123,36 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 			'size'     => 35,
 		) );
 
-      		$this->input_multiple( array(
+		$this->input_multiple( array(
 			'field_id'        => 'terms',
 			'selected_fields' => $this->data['terms'],
 			'all_fields'      => $terms_array,
 		) );
 
 		$themes_array = array();
-		$themes = get_terms( $pubtaxall, array('hide_empty' => false) );
-		if ( ! empty( $themes ) && ! is_wp_error( $themes ) ){
-    			foreach ( $themes as $theme ) {
-        			$themes_array[] =  $theme->slug;
-    			}
+		$themes = get_terms( $pubtaxall, array( 'hide_empty' => false ) );
+		if ( ! empty( $themes ) && ! is_wp_error( $themes ) ) {
+			foreach ( $themes as $theme ) {
+				$themes_array[] = $theme->slug;
+			}
 		}
-      		$this->input_multiple( array(
+
+		$this->input_multiple( array(
 			'field_id'        => 'themes',
 			'selected_fields' => $this->data['themes'],
 			'all_fields'      => $themes_array,
 		) );
+
 		$this->display_end_shell();
 	}
-	
-	function display() {
-global $post;
-$dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 
-        $themeclasses = ($this->data['themes']) ? implode(' ',$this->data['themes']) : '';  
-        $termclasses = ($this->data['terms']) ? implode(' ',$this->data['terms']) : '';  
-      	$this->display_shell( array( 'class' => 'pubrec research ' . $termclasses.' '.$themeclasses ) ); 
-		$separator = "";
+	function display() {
+		global $post;
+		$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
+		$themeclasses = ( $this->data['themes'] ) ? implode( ' ',$this->data['themes'] ) : '';
+		$termclasses = ( $this->data['terms'] ) ? implode( ' ',$this->data['terms'] ) : '';
+		$this->display_shell( array( 'class' => 'pubrec research ' . $termclasses.' '.$themeclasses ) );
+		$separator = '';
 
 		$this->display_text( array(
 					'class'        => 'thumbnail-holder',
@@ -163,14 +160,6 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 					//'separator'    => $separator,
 					'value'       	 => ( ! empty( $this->data['aopublication-image'] ) ? '<span class="thumbnail"></span>' : '' ),
 		) );
-
-		/*$this->display_text( array(
-			'field_id'       => 'aopublication-title',
-			'class'          => 'aopublication-title',
-			'default_text'   => 'Cure for Profiles',
-			'post_separator' => ' ',
-			'tag'            => 'strong',
-		) );*/
 
 		$this->display_link( array(
 			'field_id'     => 'aopublication-website',
@@ -198,7 +187,7 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 			'field_id'       => 'aoresearch-pi',
 			'class'          => 'aoresearch-pi',
 			'default_text'   => 'Bruce Wayne',
-			'value'       	 => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][name][first] .' '.$dataarray[0][name][middle].' '.$dataarray[0][name][last] ),
+			'value'       	 => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
 			'post_separator' => ' ',
 			'tag'            => 'strong',
 		) );
@@ -267,8 +256,8 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 		) );
 
 		$this->display_shell( array( 'class' => 'profileterms' ) );
-		if ( isset( $this->data['terms'] ) ):
-			foreach( $this->data['terms'] as $term ):
+		if ( isset( $this->data['terms'] ) ) :
+			foreach ( $this->data['terms'] as $term ) :
 				$this->display_text( array(
 					'class'        => 'terms',
 					'default_text' => 'my specialization',
@@ -298,10 +287,10 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 		$this->display_end_shell();
 		$this->display_end_shell();
 	}
-	
-  	/**
+
+	  /**
 	 * publication_status function.
-	 * 
+	 *
 	 * @access public
 	 * @return void
 	 */
@@ -314,14 +303,14 @@ $dataarray = maybe_unserialize(get_post_meta($post->ID,'profile_cct'));
 	}
 
 	function aoresearch_funder() {
-               return array('Other','Social Sciences and Humanities Research Council (SSHRC)','National Sciences and Engineering Research Council (NSERC)','Canadian Institutes of Health Research (CIHR)','Canada Foundation for Innovation (CFI)');
+		return array( 'Other','Social Sciences and Humanities Research Council (SSHRC)','National Sciences and Engineering Research Council (NSERC)','Canadian Institutes of Health Research (CIHR)','Canada Foundation for Innovation (CFI)' );
 	}
-  
+
 	public static function shell( $options, $data ) {
-		new Profile_CCT_AOResearch( $options, $data ); 
+		new Profile_CCT_AOResearch( $options, $data );
 	}
 }
 
 function profile_cct_aoresearch_shell( $options, $data ) {
-	Profile_CCT_AOResearch::shell( $options, $data ); 
+	Profile_CCT_AOResearch::shell( $options, $data );
 }
