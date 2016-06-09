@@ -1,0 +1,24 @@
+
+{
+
+	"name": "ubc/profile-cct-addon",
+
+	"description": "This plugin creates three new field types for the profile custom content type plugin",
+
+	"keywords": [ "wordpress", "plugin" ],
+
+	"homepage": "http://profiles.adm.arts.ubc.ca",
+
+	"license": "GPLv2",
+
+	"type": "wordpress-plugin",
+
+	"require": {
+
+		"php": ">=5.3",
+
+	"composer/installers": "~1.0"
+
+	}
+
+}
