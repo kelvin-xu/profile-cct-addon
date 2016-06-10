@@ -284,6 +284,9 @@ class Profile_CCT_Addon {
 	}
 
 	public static function aoadmin_pages() {
+		global $allowedposttags;
+		$allowedposttags['select'] = array( 'id' => array(),'name' => array() );
+		$allowedposttags['option'] = array( 'value' => array() );
 		$profile = Profile_CCT::get_object();
 		if ( ! empty( $_POST ) && isset( $_POST['update_settings_nonce_field'] ) && wp_verify_nonce( $_POST['update_settings_nonce_field'], 'update_settings_nonce' ) ) :
 			$archive = $_POST['archive'];
@@ -317,7 +320,7 @@ class Profile_CCT_Addon {
 								}
 							}
 							$html .= '</select><br>';
-							echo wp_kses_post( $html ).esc_html( $profile->settings['archive']['ao_use_taxall'][0] );
+							echo wp_kses_post( $html, $allowedposttags ).esc_html( $profile->settings['archive']['ao_use_taxall'][0] );
 							?>
 									</td>
 							</tr>
@@ -334,7 +337,7 @@ class Profile_CCT_Addon {
 								}
 							}
 								$html .= '</select><br>';
-								echo wp_kses_post( $html ).esc_html( $profile->settings['archive']['ao_use_tax'][0] );
+								echo wp_kses_post( $html, $allowedposttags ).esc_html( $profile->settings['archive']['ao_use_tax'][0] );
 							?>
 									</td>
 							</tr>
