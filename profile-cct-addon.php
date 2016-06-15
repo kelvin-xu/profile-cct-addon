@@ -284,9 +284,6 @@ class Profile_CCT_Addon {
 	}
 
 	public static function aoadmin_pages() {
-		global $allowedposttags;
-		$allowedposttags['select'] = array( 'id' => array(),'name' => array() );
-		$allowedposttags['option'] = array( 'value' => array() );
 		$profile = Profile_CCT::get_object();
 		if ( ! empty( $_POST ) && isset( $_POST['update_settings_nonce_field'] ) && wp_verify_nonce( $_POST['update_settings_nonce_field'], 'update_settings_nonce' ) ) :
 			$archive = $_POST['archive'];
@@ -307,40 +304,42 @@ class Profile_CCT_Addon {
 			<p><strong style="color:red;">***WARNING - All categorizations within AO fields will be lost</strong> if changes are made to the two taxonomy settings below and an update is done to all profiles.</p>
 			<table class="form-table">
 					<tbody>
-							<tr valign="top">
-								<th scope="row">Select an taxonomy to use with Profiles Add On fields for use on ALL profiles.</th>
-									<td>
-							<?php
-							$html = '<select id="archive_ao_use_taxall" name="archive[ao_use_taxall][0]">';
-							$html .= '<option value="default">Select a taxonomy to use.</option>';
-							foreach ( $profile->taxonomies as $taxonomy ) {
-								if ( $profile->settings['archive']['ao_use_tax'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
-									$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
-									$html .= '<option value="'.$taxonomy_id.'"' . selected( $profile->settings['archive']['ao_use_taxall'][0], $taxonomy_id, false ) . '">'.$taxonomy['plural'].'</option>';
-								}
+						<tr valign="top">
+							<th scope="row">Select an taxonomy to use with Profiles Add On fields for use on ALL profiles.</th>
+								<td>
+									<select id="archive_ao_use_taxall" name="<?php echo 'archive[ao_use_taxall][0]'; ?>">
+										<option value="default">Select a taxonomy to use.</option>
+						<?php
+						foreach ( $profile->taxonomies as $taxonomy ) {
+							if ( $profile->settings['archive']['ao_use_tax'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
+						?>
+										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_taxall'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
+						<?php
 							}
-							$html .= '</select><br>';
-							echo wp_kses_post( $html, $allowedposttags ).esc_html( $profile->settings['archive']['ao_use_taxall'][0] );
-							?>
-									</td>
-							</tr>
-							<tr valign="top">
-								<th scope="row">Select an taxonomy to use with Profiles Add On fields for use custom to EACH profile.</th>
-									<td>
-							<?php
-							$html = '<select id="archive_ao_use_tax" name="archive[ao_use_tax][0]">';
-							$html .= '<option value="default">Select a taxonomy to use.</option>';
-							foreach ( $profile->taxonomies as $taxonomy ) {
-								if ( $profile->settings['archive']['ao_use_taxall'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
-									$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
-									$html .= '<option value="'.$taxonomy_id.'"' . selected( $profile->settings['archive']['ao_use_tax'][0], $taxonomy_id, false ) . '">'.$taxonomy['plural'].'</option>';
-								}
+						}
+						?>
+									</select><br><?php echo esc_html( $profile->settings['archive']['ao_use_taxall'][0] );?>
+								</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row">Select an taxonomy to use with Profiles Add On fields for use custom to EACH profile.</th>
+								<td>
+								<select id="archive_ao_use_tax" name="<?php echo 'archive[ao_use_tax][0]'; ?>">
+										<option value="default">Select a taxonomy to use.</option>
+						<?php
+						foreach ( $profile->taxonomies as $taxonomy ) {
+							if ( $profile->settings['archive']['ao_use_taxall'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
+						?>
+										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_tax'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
+						<?php
 							}
-								$html .= '</select><br>';
-								echo wp_kses_post( $html, $allowedposttags ).esc_html( $profile->settings['archive']['ao_use_tax'][0] );
-							?>
-									</td>
-							</tr>
+						}
+						?>
+									</select><br><?php echo esc_html( $profile->settings['archive']['ao_use_tax'][0] );?>
+								</td>
+						</tr>
 
 							<tr valign="top">
 								<th scope="row"><label for="ao_archive_display">DONT show AO fields on ALL archive pages</label></th>
