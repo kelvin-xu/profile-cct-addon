@@ -14,7 +14,63 @@ class Profile_CCT_Addon_Shortcodes {
 		add_shortcode( 'list-taxonomy', array( &$this, 'list_taxonomy' ) );
 		add_shortcode( 'list-all-taxonomy', array( &$this, 'list_all_taxonomy' ) );
 		add_shortcode( 'the_tag_cloud', array( &$this, 'the_tag_cloud_shortcode' ) );
+		add_shortcode( 'related-by-name', array( &$this, 'related_by_name' ) );
 	}
+
+	/**
+	 * Shortcode function for showing related posts
+	 *
+	 * @param array $attr Attributes attributed to the shortcode.
+	 */
+	function related_by_name( $atts ) {
+		$pid = get_queried_object_id();
+		$post = get_post( $pid );
+		$tag_slug = $post->post_name;
+		//Convert tag slug to tagID
+		$tag = get_term_by( 'slug', $tag_slug, 'post_tag' );
+		$tag_id = $tag->term_id;
+		$name = get_the_title( $pid );
+		$args = array( 'tag__in' => $tag_id );
+		$cat_name = '';
+		//Add parameters here
+		$atts = shortcode_atts( array( 'category' => '', 'posts_per_page' => -1, 'img_size' => 'thumbnail', 'title' => '' ), $atts , 'related_by_name' );
+		if ( ! empty( $atts['category'] ) ) {
+			$cat_id = get_cat_ID( $atts['category'] );
+			if ( $cat_id ) {
+				$args['category__and'] = $cat_id;
+				$cat_name = $atts['category'];
+			} else {
+				$cat = get_category_by_slug( $atts['category'] );
+				if ( $cat ) {
+					$args['category__and'] = $cat->term_id;
+					$cat_name = $cat->name;
+				}
+			}
+		}
+		$args['posts_per_page'] = $atts['posts_per_page'];
+
+		$query = new WP_Query( $args );
+		if ( $query->have_posts() ) {
+			if ( $atts['title'] ) {
+					$output = '<h4>'.$name.$atts['title'].$cat_name.' posts.</h4>';
+			}
+			$output .= '<div class="related-posts">';
+			while ( $query->have_posts() ) {
+				$output .= '<div class="related-post clear">';
+				$query->the_post();
+				$outimg = '';
+				if ( has_post_thumbnail() ) {
+					$output .= get_the_post_thumbnail( null,$atts['img_size'] );
+				}
+				$output .= '<h4><a href="'.get_the_permalink().'" rel="bookmark" title="Permanent Link to '.get_the_title().'">'.get_the_title().'</a></h4>'.get_the_content().'</div>';
+			}
+			$output .= '</div>';
+		}
+		wp_reset_postdata();
+		return $output;
+	}
+
+
 
 	/**
 	 * Shortcode function for showing a tag cloud
