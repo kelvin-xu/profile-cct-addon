@@ -71,10 +71,13 @@ class Profile_CCT_Addon {
 	}
 
 	function modify_profilejs() {
-		wp_deregister_script( 'profile-cct-edit-post' );
-		wp_dequeue_script( 'profile-cct-edit-post' );
-		wp_enqueue_script( 'profile-cct-edit-post', PROFILE_CCT_DIR_URL.'/js/profile-page.js', array( 'jquery-ui-tabs' ) );
-		wp_localize_script( 'profile-cct-edit-post', 'profileCCTSocialArray', Profile_CCT_Social::social_options() );
+		global $current_screen;
+		if ( 'profile_cct' == $current_screen->id ) :
+			wp_deregister_script( 'profile-cct-edit-post' );
+			wp_dequeue_script( 'profile-cct-edit-post' );
+			wp_enqueue_script( 'profile-cct-edit-post', PROFILE_CCT_DIR_URL.'/js/profile-page.js', array( 'jquery-ui-tabs' ) );
+			wp_localize_script( 'profile-cct-edit-post', 'profileCCTSocialArray', Profile_CCT_Social::social_options() );
+		endif;
 	}
 
 	public function addfieldtype( $setting, $form ) {
@@ -276,8 +279,8 @@ class Profile_CCT_Addon {
 	}
 
 	public function load_admin_js_script() {
-		$current_screen = get_current_screen();
-		if ( $current_screen->post_type === 'profile_cct' ) {
+		global $current_screen;
+		if ( 'profile_cct' == $current_screen->id ) :
 			wp_enqueue_script( 'jquery' );
 			global $post;
 			$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
@@ -289,7 +292,7 @@ class Profile_CCT_Addon {
 						'year' => date( 'Y' ),
 					)
 				);
-		}
+		endif;
 	}
 
 	public static function aoadmin_pages() {
