@@ -65,7 +65,15 @@ class Profile_CCT_Addon {
 		add_action( 'posts_clauses', array( &$this, 'get_all_profiles' ), 10, 2 );
 		add_action( 'admin_menu', array( &$this, 'add_ao_submenu' ) );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'load_admin_js_script' ) );
+		add_action( 'admin_print_styles-post.php', array( &$this, 'modify_profilejs' ), 100 );
+		add_action( 'admin_print_styles-post-new.php', array( &$this, 'modify_profilejs' ), 100 );
 		add_action( 'wp_enqueue_scripts', array( &$this, 'ao_fe_scripts' ) );
+	}
+
+	function modify_profilejs() {
+		wp_deregister_script( 'profile-cct-edit-post' );
+		wp_dequeue_script( 'profile-cct-edit-post' );
+		wp_enqueue_script( 'profile-addon-page-script', PROFILE_Addon_CCT_DIR_URL.'/profile-page.js' );
 	}
 
 	public function addfieldtype( $setting, $form ) {
