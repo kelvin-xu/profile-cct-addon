@@ -73,7 +73,8 @@ class Profile_CCT_Addon {
 	function modify_profilejs() {
 		wp_deregister_script( 'profile-cct-edit-post' );
 		wp_dequeue_script( 'profile-cct-edit-post' );
-		wp_enqueue_script( 'profile-addon-page-script', PROFILE_Addon_CCT_DIR_URL.'/profile-page.js' );
+		wp_enqueue_script( 'profile-cct-edit-post', PROFILE_CCT_DIR_URL.'/js/profile-page.js', array( 'jquery-ui-tabs' ) );
+		wp_localize_script( 'profile-cct-edit-post', 'profileCCTSocialArray', Profile_CCT_Social::social_options() );
 	}
 
 	public function addfieldtype( $setting, $form ) {
