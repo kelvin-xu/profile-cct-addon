@@ -13,7 +13,7 @@ class Profile_CCT_Addon_Shortcodes {
 		add_shortcode( 'aolist2', array( &$this, 'aolist2' ) );
 		add_shortcode( 'list-taxonomy', array( &$this, 'list_taxonomy' ) );
 		add_shortcode( 'list-all-taxonomy', array( &$this, 'list_all_taxonomy' ) );
-		add_shortcode( 'the_tag_cloud', array( &$this, 'the_tag_cloud_shortcode' ) );
+		add_shortcode( 'ao_tag_cloud', array( &$this, 'ao_tag_cloud_shortcode' ) );
 		add_shortcode( 'related-by-name', array( &$this, 'related_by_name' ) );
 	}
 
@@ -79,26 +79,96 @@ class Profile_CCT_Addon_Shortcodes {
 	 * the tag cloud for use with the shortcode API.
 	 * @link http://codex.wordpress.org/Template_Tags/wp_tag_cloud
 	 *
-	 * @since 0.1
+	 * Hooks in the filter to keep correct counts on ao_fields
 	 * @param array $attr Attributes attributed to the shortcode.
 	 */
-	function the_tag_cloud_shortcode( $attr ) {
-		/*if (! isset($attr['taxonomy'])){
-			$attr['taxonomy'] = 'post_tag';
-		}*/
-		//$attr['taxonomy'] = 'profile_cct_specialization';
-		if ( $attr['number'] ) {
-			$attr['number'] = (int) $attr['number'];
+	function ao_tag_cloud_shortcode( $attr ) {
+		if ( $attr['taxonomy'] ) {
+			$profile = Profile_CCT::get_object();
+			if ( ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) || ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) ) {
+				if ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) {
+					  $this->cloud_taxonomy = 'terms';
+				}
+				if ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) {
+					  $this->cloud_taxonomy = 'themes';
+				}
+				add_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
+				if ( $attr['number'] ) {
+					$attr['number'] = (int) $attr['number'];
+					$this->cloud_number = $attr['number'];
+				}
+				if ( $attr['largest'] ) {
+					$attr['largest'] = (int) $attr['largest'];
+					$this->cloud_largest = $attr['largest'];
+				}
+				if ( $attr['smallest'] ) {
+					$attr['smallest'] = (int) $attr['smallest'];
+					$this->cloud_smallest = $attr['smallest'];
+				}
+				$attr['echo'] = false;
+				$attr['hide_empty'] = false;
+				$output = wp_tag_cloud( $attr );
+				remove_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
+				return $output;
+			} else {
+				return 'Taxonomy needs to be one of the ones set in AO Settings'.$profile->settings['archive']['ao_use_tax'][0].' or '.$profile->settings['archive']['ao_use_taxall'][0];
+			}
+		} else {
+			return 'You are missing the taxonomy parameter';
 		}
-		if ( $attr['largest'] ) {
-			$attr['largest'] = (int) $attr['largest'];
+	}
+
+	function ao_tag_count( $tags_data ) {
+		$counts = array();
+		foreach ( $tags_data as $key => $tag_data ) {
+			$counts[ $key ] = $this->get_ao_termcount( $tag_data['slug'] );
 		}
-		if ( $attr['smallest'] ) {
-			$attr['smallest'] = (int) $attr['smallest'];
+		$min_count = min( $counts );
+		$spread = max( $counts ) - $min_count;
+		$font_spread = $this->cloud_largest - $this->cloud_smallest;
+		if ( $spread > 0 ) {
+			$font_step = $font_spread / $spread;
 		}
-		$attr['echo'] = false;
-		$attr['hide_empty'] = false;
-		return wp_tag_cloud( $attr );
+		foreach ( $tags_data as $key => &$single_tag_data ) {
+			$single_tag_data['name'] = $single_tag_data['name'].'('.$counts[ $key ].')';
+			$single_tag_data['font_size'] = $this->cloud_smallest + ($counts[ $key ] - $min_count) * $font_step;
+		}
+		return $tags_data;
+	}
+
+	function get_ao_termcount( $termslug ) {
+		$pcount = 0;
+		$uakeys = array( 'aopublication-chapter','aoresearch-pi','aocourse-code' );
+		$metaquery = array(
+			array(
+				'key' => 'profile_cct',
+				'value' => $termslug,
+				'compare' => 'LIKE',
+			),
+		);
+		$posts = get_posts(array(
+			'numberposts'   => -1,
+			'post_type' => 'profile_cct',
+			'meta_query' => $metaquery,
+		));
+		foreach ( $posts as $post ) : // begin cycle through posts of this taxonmy
+			$dataarray = maybe_unserialize( get_post_meta( $post->ID,'profile_cct' ) );
+			foreach ( $dataarray[0] as $profilefield ) {
+				if ( is_array( $profilefield[0] ) ) {
+					if ( array_key_exists( $uakeys[0], $profilefield[0] ) || array_key_exists( $uakeys[1], $profilefield[0] ) || array_key_exists( $uakeys[2], $profilefield[0] ) ) {
+						foreach ( $profilefield as $publication ) {
+							$terms_array = $publication[ $this->cloud_taxonomy ];
+							if ( $terms_array ) {
+								if ( in_array( $termslug,$terms_array ) ) {
+									$pcount++;
+								}
+							}
+						}
+					}
+				}
+			}
+		endforeach;
+		return $pcount;
 	}
 
 	function list_all_taxonomy( $atts ) {
