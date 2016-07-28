@@ -38,7 +38,7 @@ setEmptyResearch();
 setEmptyPublications();
 
   	$(".abstract-icon .dashicons-plus-alt").live("click", function (event) {
-    		$(this).parent().parent().parent().find(".abstract").toggle();
+    		$(this).parent().parent().parent().parent().find(".abstract").slideToggle( 'slow' );
   	});
 
   $( "#aopublication-pagenumbers,#aopublication-bookeds,#aopublication-publisher" ).each(function( index ) {
