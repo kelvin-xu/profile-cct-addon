@@ -37,7 +37,7 @@ span.thumbnail-holder{margin-top:0!important;}
 .pubrec .separator{margin-left:2px;margin-right:2px;margin-top:0;float:none;}
 .pubrec .abstract,.pubrec #aopublication-image{display:none;}
 
-.profileterms,.abstract-icon{display:inline-block;margin-left:2px;margin-right:2px;}
+.profileterms,.abstract-icon{display:inline;margin-left:2px;margin-right:2px;}
 
 .handle.ui-sortable-handle .aoresearch .abstract-icon,
 .handle.ui-sortable-handle .aopublications .abstract-icon{margin-top:-4px;}
@@ -67,7 +67,7 @@ span.thumbnail-holder{margin-top:0!important;}
 
 /*publication specific*/
 
-
+.aopublication-website-separator,aopublication-image-separator{display:none;}
 
 .pubrec strong#aopublication-authors:after{content:".";}
 .pubrec span#aopublication-pagenumbers:not(:empty):before{content:": ";}
@@ -139,6 +139,10 @@ span.thumbnail-holder{margin-top:0!important;}
 .field > .aocourses > .pubrec #aopublication-website,
 .field > .aoresearch > .pubrec #aopublication-website,
 .field > .aopublications > .pubrec #aopublication-website{text-decoration:none}
+
+/*Deal with autop*/
+.field > .aoresearch p,.field > .aocourses p,.field > .aopublications p{display:inline;}
+.aopublications p > .text-input,.aocourses p > .text-input,.aoresearch p > .text-input{display:none;}
 
 /* Brought over from css*/
 .field-shell-aocourses > span.text-input,
