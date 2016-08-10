@@ -142,7 +142,8 @@ class Profile_CCT_AOPublications extends Profile_CCT_Field {
 		$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
 		$themeclasses = ( $this->data['themes']) ? implode( ' ',$this->data['themes'] ) : '';
 		$termclasses = ( $this->data['terms']) ? implode( ' ',$this->data['terms'] ) : '';
-		$this->display_shell( array( 'class' => 'pubrec publication ' . $termclasses.' '.$themeclasses.' '.$hideclasses ) );
+		$isbook = ( $this->data['aopublication-book']) ? 'book' : 'journal';
+		$this->display_shell( array( 'class' => 'pubrec publication ' . $termclasses.' '.$themeclasses.' '.$isbook.' '.$hideclasses ) );
 		$separator = '';
 
 		$this->display_text( array(

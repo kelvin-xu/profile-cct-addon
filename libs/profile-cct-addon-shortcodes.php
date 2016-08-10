@@ -8,9 +8,15 @@ class Profile_CCT_Addon_Shortcodes {
 	* @static
 	* @return void
 	*/
+	/** tag cloud defaults from wp **/
+	private $cloud_smallest = 8;
+	private $cloud_largest = 22;
+	private $cloud_number = 45;
+	private $cloud_taxonomy = '';
+
 
 	function __construct( ) {
-		add_shortcode( 'aolist2', array( &$this, 'aolist2' ) );
+		add_shortcode( 'aolist-masonary', array( &$this, 'aolist_masonary' ) );
 		add_shortcode( 'list-taxonomy', array( &$this, 'list_taxonomy' ) );
 		add_shortcode( 'list-all-taxonomy', array( &$this, 'list_all_taxonomy' ) );
 		add_shortcode( 'ao_tag_cloud', array( &$this, 'ao_tag_cloud_shortcode' ) );
@@ -298,6 +304,82 @@ class Profile_CCT_Addon_Shortcodes {
 		endforeach;
 
 		return $output;
+	}
+
+	function aolist_masonary($atts) {
+		$profile = Profile_CCT::get_object();
+		$atts = shortcode_atts( array( 'term' => '', 'class' => 'grid' ), $atts , 'aolist2' );
+		if ( $profile->settings['archive']['ao_use_taxall'][0]  ) {
+			if ( $atts['term'] ) {
+				$term = get_term_by( 'slug', $atts['term'], $profile->settings['archive']['ao_use_taxall'][0] );
+			}
+		}
+		if ( $term ) {
+			$posts = get_posts( array( 'numberposts' => -1, 'post_type' => 'profile_cct' ) );
+			$pcount = 0;
+			foreach ( $posts as $post ) { // begin cycle through posts of this taxonomy
+				$ibucket = '<div class="grid-item tile profileimg"><a href="'.get_post_permalink( $post->ID ).'"><p class="aoptitle">'.get_the_title( $post->ID ).'</p><img src="'.wp_get_attachment_url( get_post_thumbnail_id( $post->ID, 'full' ) ).'" /></a></div>';
+				$rcount = 0;
+				$bcount = 0;
+				$jcount = 0;
+				$ccount = 0;
+				$items = '';
+				$dataarray = maybe_unserialize( get_post_meta( $post->ID,'profile_cct' ) );
+				foreach ( $dataarray[0] as $profilefield ) { //each field
+					if ( is_array( $profilefield[0] ) ) {
+						foreach ( $profilefield as $publication ) {
+							$terms_array = $publication['themes'];
+							if ( $terms_array ) {
+								if ( in_array( $term->slug, $terms_array ) ) {
+									$ao_link_data = '';
+									$ao_link_data_end = '';
+									$ao_image_data = '';
+									$ao_hasimage = '';
+									if ( $publication['aopublication-website'] ) {
+										$ao_link_data = '<a href="'.$publication['aopublication-website'].'">';
+										$ao_link_data_end = '</a>';
+									}
+									if ( $publication['aopublication-image'] ) {
+										$ao_image_data = '<img class="aoimg" src="'.$publication['aopublication-image'].'"/>';
+										$ao_hasimage = 'has-image';
+									}
+									if ( array_key_exists( 'aoresearch-pi' ,$profilefield[0] ) ) { //research
+										$rcount ++;
+										$ao_type = 'research';
+										$ao_title = $publication['aopublication-title'];
+										$ao_tagline = $publication['aoresearch-funder'];
+									}
+									if ( array_key_exists( 'aopublication-chapter' ,$profilefield[0] ) ) { //publication
+										$ao_title = $publication['aopublication-title'];
+										if ( $publication['aopublication-book'] ) {
+											$bcount ++;
+											$ao_type = 'book';
+											$ao_tagline = $publication['aopublication-publisher'].': '.$publication['aopublication-year'];
+										} else {
+											$jcount ++;
+											$ao_type = 'journal';
+											$ao_tagline = $publication['aopublication-chapter']; //check this
+										}
+									}
+									if ( array_key_exists( 'aocourse-code' ,$profilefield[0] ) ) { //course
+										$ccount ++;
+										$ao_type = 'course';
+										$ao_title = $publication['aocourse-code'];
+										$ao_tagline = $publication['aopublication-title'];
+									}
+									$items .= '<div id="tile" class="grid-item tile inactive '.$ao_type.' '.$ao_hasimage.'">'.$ao_link_data.'<span class="aoimgtype-wrap"></span><span class="aodata"><p class="aotitle">'.$ao_title.'</p><p class="aotag">'.$ao_tagline.'</p></span><span class="aoimg-wrap">'.$ao_image_data.'</span>'.$ao_link_data_end.'<span class="aobgimg-wrap"></span></div>';
+								}
+							}
+						}
+					}
+				}
+				$output .= '<div id="pgrid'.$pcount.'" data-pcount="'.$pcount.'" data-rcount="'.$rcount.'" data-bcount="'.$bcount.'" data-jcount="'.$jcount.'" data-ccount="'.$ccount.'" class="ao-grid aoprofile'.$pcount.'">'.$ibucket.$items.'</div>';
+				$pcount ++;
+			}
+			return $output;
+		} else {
+			return 'ERROR - Missing term or ao_taxonomy in shortcode parameter OR no term in taxonomy';
+		}
 	}
 
 }
