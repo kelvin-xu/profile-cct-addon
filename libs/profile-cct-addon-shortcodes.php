@@ -14,7 +14,9 @@ class Profile_CCT_Addon_Shortcodes {
 	private $cloud_number = 45;
 	private $cloud_taxonomy = '';
 
-
+	// -- Function Name : __construct
+	// -- Params : None
+	// -- Purpose : New Instance
 	function __construct( ) {
 		add_shortcode( 'aolist-masonary', array( &$this, 'aolist_masonary' ) );
 		add_shortcode( 'list-taxonomy', array( &$this, 'list_taxonomy' ) );
@@ -23,11 +25,9 @@ class Profile_CCT_Addon_Shortcodes {
 		add_shortcode( 'related-by-name', array( &$this, 'related_by_name' ) );
 	}
 
-	/**
-	 * Shortcode function for showing related posts
-	 *
-	 * @param array $attr Attributes attributed to the shortcode.
-	 */
+	// -- Function Name : related_by_name
+	// -- Params : None
+	// -- Purpose : Relates posts to profiles using tag_slug
 	function related_by_name( $atts ) {
 		$pid = get_queried_object_id();
 		$post = get_post( $pid );
@@ -73,7 +73,7 @@ class Profile_CCT_Addon_Shortcodes {
 			$output .= '</div>';
 		}
 		wp_reset_postdata();
-		return $output;
+		return wp_kses_post( $output );
 	}
 
 
@@ -91,11 +91,11 @@ class Profile_CCT_Addon_Shortcodes {
 	function ao_tag_cloud_shortcode( $attr ) {
 		if ( $attr['taxonomy'] ) {
 			$profile = Profile_CCT::get_object();
-			if ( ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) || ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) ) {
-				if ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) {
+			if ( ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_tax'][0] ) || ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_taxall'][0] ) ) {
+				if ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_tax'][0] ) {
 					  $this->cloud_taxonomy = 'terms';
 				}
-				if ( $attr['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) {
+				if ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_taxall'][0] ) {
 					  $this->cloud_taxonomy = 'themes';
 				}
 				add_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
@@ -117,13 +117,16 @@ class Profile_CCT_Addon_Shortcodes {
 				remove_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
 				return $output;
 			} else {
-				return 'Taxonomy needs to be one of the ones set in AO Settings'.$profile->settings['archive']['ao_use_tax'][0].' or '.$profile->settings['archive']['ao_use_taxall'][0];
+				return wp_kses_post( 'Taxonomy needs to be one of the ones set in AO Settings'.$profile->settings['archive']['ao_use_tax'][0].' or '.$profile->settings['archive']['ao_use_taxall'][0] );
 			}
 		} else {
-			return 'You are missing the taxonomy parameter';
+			return wp_kses_post( 'You are missing the taxonomy parameter' );
 		}
 	}
 
+	// -- Function Name : ao_tag_count
+	// -- Params : None
+	// -- Purpose : Filter Callback to wp tag cloud
 	function ao_tag_count( $tags_data ) {
 		$counts = array();
 		foreach ( $tags_data as $key => $tag_data ) {
@@ -142,6 +145,10 @@ class Profile_CCT_Addon_Shortcodes {
 		return $tags_data;
 	}
 
+	// -- Function Name : get_ao_termcount
+	// -- Params : $termslug - the term_id
+	// -- Purpose : Counts the terms within an ao field
+	// -- metaquery caching needed
 	function get_ao_termcount( $termslug ) {
 		$pcount = 0;
 		$uakeys = array( 'aopublication-chapter','aoresearch-pi','aocourse-code' );
@@ -177,6 +184,10 @@ class Profile_CCT_Addon_Shortcodes {
 		return $pcount;
 	}
 
+	// -- Function Name : list_all_taxonomy
+	// -- Params : params
+	// -- Purpose : Shortcode to list all ao objects in a taxonomy
+	// -- Debug ob_start stuff if infinite loop then
 	function list_all_taxonomy( $atts ) {
 		$atts = shortcode_atts( array( 'taxonomy' => '', 'template' => '', 'term' => '', 'wrap' => false, 'image' => false, 'title' => false ), $atts , 'list-all-taxonomy' );
 		$query_array = array(
@@ -184,11 +195,11 @@ class Profile_CCT_Addon_Shortcodes {
 			'post_type' => 'profile_cct',
 		);
 		$profile = Profile_CCT::get_object();
-		if ( ( $atts['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) || ( $atts['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) ) {
-			if ( $atts['taxonomy'] == $profile->settings['archive']['ao_use_tax'][0] ) {
+		if ( ( $atts['taxonomy'] === $profile->settings['archive']['ao_use_tax'][0] ) || ( $atts['taxonomy'] === $profile->settings['archive']['ao_use_taxall'][0] ) ) {
+			if ( $atts['taxonomy'] === $profile->settings['archive']['ao_use_tax'][0] ) {
 				  $tax_key = 'terms';
 			}
-			if ( $atts['taxonomy'] == $profile->settings['archive']['ao_use_taxall'][0] ) {
+			if ( $atts['taxonomy'] === $profile->settings['archive']['ao_use_taxall'][0] ) {
 				  $tax_key = 'themes';
 			}
 		} else {
@@ -196,7 +207,7 @@ class Profile_CCT_Addon_Shortcodes {
 		}
 
 		if ( empty( $atts['template'] ) ) {
-			  $templates = array( 'aopublications','aoresearch','aocourses' );
+			$templates = array( 'aopublications','aoresearch','aocourses' );
 		} else {
 			$templates = explode( ',',$atts['template'] );
 		}
@@ -221,36 +232,30 @@ class Profile_CCT_Addon_Shortcodes {
 						}
 					} else {
 						call_user_func( 'profile_cct_'.$template.'_shell', 'page', $publication );
-						  $pcount++;
+						$pcount++;
 					}
 				}
 			}
-			  //if has stuff and
-			if ( ( $atts['wrap']) && ( $pcount > 0 ) ) {
-				if ( $atts['title'] ) {
-					$aotitle = '<span class="'.$atts['title'].'">'.get_the_title( $post->ID ).'</span>';
-				}
-				if ( $atts['image'] ) {
-					$aoimage = '<a href="'.get_post_permalink( $post->ID ).'"><span class="'.$atts['image'].'" style="width:80px;height:80px;background-size:contain;display:inline-block;background-image:url('.wp_get_attachment_url( get_post_thumbnail_id( $post->ID,'full' ) ).')">'.$aotitle.'</span></a>';
-				}
-				$output .= '<div class="'.$atts['wrap'].'">'.$aoimage.ob_get_contents().'</div>';
-				ob_end_clean();
+			ob_end_clean();
 			}
 		endforeach;
 		//$output = ob_get_contents();$output
-		return $output;
+		return wp_kses_post( $output );
 	}
 
+	// -- Function Name : list_taxonomy
+	// -- Params : parameters
+	// -- Purpose : Shortcode to list all ao objects in a taxonomy -split by term
 	function list_taxonomy( $atts ) {
 		$atts = shortcode_atts( array( 'taxonomy' => '', 'grouped' => false, 'template' => 'aopublications' ), $atts , 'list-taxonomy' );
 		$output = '';
-		if ( 'aopublications' == $atts['template'] ) {
+		if ( 'aopublications' === $atts['template'] ) {
 			$uakey = 'aopublication-chapter';
 		}
-		if ( 'aoresearch' == $atts['template'] ) {
+		if ( 'aoresearch' === $atts['template'] ) {
 			$uakey = 'aoresearch-pi';
 		}
-		if ( 'aocourses' == $atts['template'] ) {
+		if ( 'aocourses' === $atts['template'] ) {
 			$uakey = 'aocourse-code';
 		}
 		$terms = get_terms( $atts['taxonomy'], array( 'hide_empty' => false ) );
@@ -303,9 +308,12 @@ class Profile_CCT_Addon_Shortcodes {
 			ob_end_clean();
 		endforeach;
 
-		return $output;
+		return wp_kses_post( $output );
 	}
 
+	// -- Function Name : aolist_masonary
+	// -- Params : None
+	// -- Purpose : Shortcode to create markup to be used by js
 	function aolist_masonary($atts) {
 		$profile = Profile_CCT::get_object();
 		$atts = shortcode_atts( array( 'term' => '', 'class' => 'grid' ), $atts , 'aolist2' );
@@ -376,9 +384,9 @@ class Profile_CCT_Addon_Shortcodes {
 				$output .= '<div id="pgrid'.$pcount.'" data-pcount="'.$pcount.'" data-rcount="'.$rcount.'" data-bcount="'.$bcount.'" data-jcount="'.$jcount.'" data-ccount="'.$ccount.'" class="ao-grid aoprofile'.$pcount.'">'.$ibucket.$items.'</div>';
 				$pcount ++;
 			}
-			return $output;
+			return wp_kses_post( $output );
 		} else {
-			return 'ERROR - Missing term or ao_taxonomy in shortcode parameter OR no term in taxonomy';
+			return wp_kses_post( 'ERROR - Missing term or ao_taxonomy in shortcode parameter OR no term in taxonomy' );
 		}
 	}
 

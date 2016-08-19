@@ -9,10 +9,10 @@
  * Licence: GPLv2
  */
 
-add_filter( 'plugins_loaded', '_check_dependancy' );
+add_filter( 'plugins_loaded', '_profile_cct_addon_check_dependancy' );
 add_filter( 'plugins_loaded', '_profile_cct_addon' );
 
-function _check_dependancy( ) {
+function _profile_cct_addon_check_dependancy( ) {
 	// Exit if accessed directly
 	if ( ! class_exists( 'Profile_CCT_Admin' ) ) {
 		//deactivate if GF not active - has to be done out of class as class is an extension
@@ -44,10 +44,9 @@ class Profile_CCT_Addon {
 		$this->includes();
 		add_filter( 'get_the_excerpt', array( &$this, 'edit_content' ) );
 		add_action( 'init', array( &$this, 'init' ) );
-
 	}
 
-	  // -- Function Name : includes
+	// -- Function Name : includes
 	// -- Params :
 	// -- Purpose : All php to be included
 	private function includes() {
@@ -59,6 +58,9 @@ class Profile_CCT_Addon {
 		require( PROFILE_Addon_CCT_DIR_PATH . 'libs/profile-cct-addon-shortcodes.php' );
 	}
 
+	// -- Function Name : init
+	// -- Params :
+	// -- Purpose : All actions filters
 	public function init( ) {
 		add_filter( 'profile_cct_default_options', array( &$this, 'addfieldtype' ), 10, 2 );
 		add_filter( 'profile_cct_fields_to_clone', array( &$this, 'addfieldtypetoclone' ), 10, 1 );
@@ -70,9 +72,14 @@ class Profile_CCT_Addon {
 		add_action( 'wp_enqueue_scripts', array( &$this, 'ao_fe_scripts' ) );
 	}
 
+
+	// -- Function Name : modify_profilejs
+	// -- Params :
+	// -- Purpose : Replace file by dequeue/enqueue
+	// -- Fix taxonomy issue with Profiles plugin
 	function modify_profilejs() {
 		global $current_screen;
-		if ( 'profile_cct' == $current_screen->id ) :
+		if ( 'profile_cct' === $current_screen->id ) :
 			wp_deregister_script( 'profile-cct-edit-post' );
 			wp_dequeue_script( 'profile-cct-edit-post' );
 			wp_enqueue_script( 'profile-cct-edit-post', PROFILE_Addon_CCT_DIR_URL.'/profile-page.js', array( 'jquery-ui-tabs' ) );
@@ -80,6 +87,9 @@ class Profile_CCT_Addon {
 		endif;
 	}
 
+	// -- Function Name : addfieldtype
+	// -- Params :
+	// -- Purpose : Add the fields to profiles bench
 	public function addfieldtype( $setting, $form ) {
 		if ( $setting['fields']['bench'] ) {
 			array_push( $setting['fields']['bench'],array( 'type' => 'aopublications', 'label' => 'aopublications' ) );
@@ -89,6 +99,9 @@ class Profile_CCT_Addon {
 		return $setting;
 	}
 
+	// -- Function Name : addfieldtypetoclone
+	// -- Params :
+	// -- Purpose : Allow new fields to be clonefields_array
 	public function addfieldtypetoclone( $clonefields_array ) {
 		array_push( $clonefields_array, array( 'type' => 'aopublications' ) );
 		array_push( $clonefields_array, array( 'type' => 'aocourses' ) );
@@ -105,6 +118,9 @@ class Profile_CCT_Addon {
 		define( 'PROFILE_Addon_CCT_DIR_URL', plugins_url( '', PROFILE_Addon_CCT_BASENAME ) );
 	}
 
+	// -- Function Name : add_ao_submenu
+	// -- Params :
+	// -- Purpose : All submenu into profiles
 	function add_ao_submenu() {
 		// Settings page
 		$page = add_submenu_page(
@@ -115,28 +131,29 @@ class Profile_CCT_Addon {
 			array( __CLASS__, 'aoadmin_pages' )
 		);
 	}
+
 	// -- Function Name : edit_content
 	// -- Params : $content
 	// -- Purpose : Manipulate content based on context
 	function edit_content( $content ) {
 		global $post;
 
-		if ( (is_single()) && $post->post_type == 'profile_cct' ) {
-			return $content.'HELLO FROM SINGLE';
+		if ( (is_single()) && $post->post_type === 'profile_cct' ) {
+			return $content;
 		} else {
-			if ( (is_tax()) && $post->post_type == 'profile_cct' ) {
+			if ( (is_tax()) && $post->post_type === 'profile_cct' ) {
 				$qobj = get_queried_object();
 				$currentqobj = $qobj->slug;
 
 				//****MOD hideshow
 				$profile = Profile_CCT::get_object();
 				$hideclasses = '';
-				if ( $qobj->taxonomy == $this->extratax ) {
+				if ( $qobj->taxonomy === $this->extratax ) {
 					if ( ! empty( $profile->settings['archive']['ao_display_onextratax'] ) ) {
 						$hideclasses  .= 'hide-extratax';
 					}
 				}
-				if ( $qobj->taxonomy == $this->intratax ) {
+				if ( $qobj->taxonomy === $this->intratax ) {
 					if ( ! empty( $profile->settings['archive']['ao_display_onintratax'] ) ) {
 						$hideclasses  .= 'hide-intratax';
 					}
@@ -146,6 +163,7 @@ class Profile_CCT_Addon {
 				$param = '';
 
 				$dom = new domDocument;
+				//--Necessary silencing to control unnecessary output
 				@$dom->loadHTML( $content );
 				$xpath = new DOMXPath( $dom );
 
@@ -202,9 +220,9 @@ class Profile_CCT_Addon {
 				return '<span class="'.$hideclasses.'">'.$dom->saveHTML().'</span>';
 
 			} else {
-				if ( (is_archive()) && $post->post_type == 'profile_cct' ) {
-					if ( (is_search()) && $post->post_type == 'profile_cct' ) {
-						$search = $_GET['s'];
+				if ( (is_archive()) && $post->post_type === 'profile_cct' ) {
+					if ( (is_search()) && $post->post_type === 'profile_cct' ) {
+						$search = esc_html( $_GET['s'] );
 						$search = str_replace( '\"','',$search,$count );
 						if ( $count <= 0 ) {
 							$search = explode( ' ', $search );
@@ -232,9 +250,9 @@ class Profile_CCT_Addon {
 		return $content;
 	}
 
-	/**
-	  * Proper way to enqueue scripts and styles.
-	  */
+	// -- Function Name : ao_fe_scripts
+	// -- Params :
+	// -- Purpose : Load front-end js
 	function ao_fe_scripts() {
 		wp_enqueue_script( 'profile-addon-fe-script', PROFILE_Addon_CCT_DIR_URL.'/profile-addon-fe.js' );
 		//load dashicons style
@@ -243,12 +261,19 @@ class Profile_CCT_Addon {
 		wp_enqueue_script( 'profile-addon-masonary', PROFILE_Addon_CCT_DIR_URL.'/masonary.pkgd.min.js' );
 	}
 
+	// -- Function Name : custom_posts_join
+	// -- Params :
+	// -- Purpose : Include all profles for taxonomy
 	function custom_posts_join( $join ) {
 			 global $wpdb;
 			 $join .= " LEFT JOIN $wpdb->postmeta ON $wpdb->posts.ID = $wpdb->postmeta.post_id ";
 			 return $join;
 	}
 
+	// -- Function Name : get_all_profiles
+	// -- Params :
+	// -- Purpose : Get All the profiles here
+	// -- Meta query cache needed here???
 	function get_all_profiles( $pieces, $query ) {
 		global $wpdb;
 		if ( ! is_admin() && $query->is_main_query() && $query->is_tax( $this->extratax ) ) {
@@ -278,9 +303,12 @@ class Profile_CCT_Addon {
 		return $pieces;
 	}
 
+	// -- Function Name : load_admin_js_script
+	// -- Params :
+	// -- Purpose : Load admin js scripts here
 	public function load_admin_js_script() {
 		global $current_screen;
-		if ( 'profile_cct' == $current_screen->id ) :
+		if ( 'profile_cct' === $current_screen->id ) :
 			wp_enqueue_script( 'jquery' );
 			global $post;
 			$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
@@ -295,10 +323,13 @@ class Profile_CCT_Addon {
 		endif;
 	}
 
+	// -- Function Name : aoadmin_pages
+	// -- Params :
+	// -- Purpose : Settings page
 	public static function aoadmin_pages() {
 		$profile = Profile_CCT::get_object();
 		if ( ! empty( $_POST ) && isset( $_POST['update_settings_nonce_field'] ) && wp_verify_nonce( $_POST['update_settings_nonce_field'], 'update_settings_nonce' ) ) :
-			$archive = $_POST['archive'];
+			$archive = esc_html( $_POST['archive'] );
 			$profile->settings['archive'] = $archive;
 			update_option( 'Profile_CCT_settings', $profile->settings );
 			$note = 'Settings saved.';
@@ -323,7 +354,7 @@ class Profile_CCT_Addon {
 										<option value="default">Select a taxonomy to use.</option>
 						<?php
 						foreach ( $profile->taxonomies as $taxonomy ) {
-							if ( $profile->settings['archive']['ao_use_tax'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+							if ( $profile->settings['archive']['ao_use_tax'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
 								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
 						?>
 										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_taxall'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
@@ -341,7 +372,7 @@ class Profile_CCT_Addon {
 										<option value="default">Select a taxonomy to use.</option>
 						<?php
 						foreach ( $profile->taxonomies as $taxonomy ) {
-							if ( $profile->settings['archive']['ao_use_taxall'][0] != Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+							if ( $profile->settings['archive']['ao_use_taxall'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
 								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
 						?>
 										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_tax'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
@@ -383,8 +414,9 @@ class Profile_CCT_Addon {
 
 }
 
-
-
+// -- Function Name : _profile_cct_addon
+// -- Params :
+// -- Purpose : call
 function _profile_cct_addon() {
 	return new Profile_CCT_Addon();
 }
