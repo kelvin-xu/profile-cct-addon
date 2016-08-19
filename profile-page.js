@@ -18,7 +18,7 @@ var Profile_CCT_PAGE = {
 				jQuery("#TB_window").fadeOut("fast", function() {
 					jQuery('#TB_window,#TB_overlay,#TB_HideSelect').unload("#TB_ajaxContent").unbind().remove();
 				});
-			}
+			};
 		}
 
 		/*jQuery('.meta-box-sortables').removeClass('meta-box-sortables');*/
@@ -37,7 +37,7 @@ var Profile_CCT_PAGE = {
 		var link = jQuery(this);
 		var field = link.prev();
 		var count = field.data('count');
-		if (count == undefined) count = 0;
+		if (count === undefined) count = 0;
 		var new_count = count + 1;
 
 		var copy = field.clone();
@@ -71,19 +71,19 @@ var Profile_CCT_PAGE = {
 			if ( jQuery(this).attr('type') == 'checkbox' ) {
 				jQuery(this).attr('name', new_name).attr('checked', false);
 
-				if ( new_id != "" ) {
+				if ( new_id !== "" ) {
 					jQuery(this).attr('id', new_id);
 				}
-				if ( new_labelFor != "" ) {
+				if ( new_labelFor !== "" ) {
 					jQuery(this).attr('for', new_labelFor);
 				}
 			} else {
 				jQuery(this).attr('name', new_name).val('');
 
-				if ( new_id != "" ) {
+				if ( new_id !== "" ) {
 					jQuery(this).attr('id', new_id);
 				}
-				if ( new_labelFor != "" ) {
+				if ( new_labelFor !== "" ) {
 					jQuery(this).attr('for', new_labelFor);
 				}
 			}
@@ -114,7 +114,7 @@ var Profile_CCT_PAGE = {
 jQuery(document).ready(Profile_CCT_PAGE.onReady);
 
 var socialOptions = profileCCTSocialArray;
-var socialArray = new Array();
+var socialArray = [];
 for (var i = 0; i < socialOptions.length; i++) {
 	socialArray[socialOptions[i].label] = socialOptions[i];
 }
