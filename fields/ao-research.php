@@ -67,7 +67,7 @@ class Profile_CCT_AOResearch extends Profile_CCT_Field {
 
 		$this->input_text( array(
 			'field_id' => 'aoresearch-funder',
-			'class' => ( ( $this->data['aoresearch-funder-selection'] ) == 'Other' ? 'visible' : '' ),
+			'class' => ( ( $this->data['aoresearch-funder-selection'] ) === 'Other' ? 'visible' : '' ),
 			'hidden'   => 1,
 			'size'     => 26,
 		) );

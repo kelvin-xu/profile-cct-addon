@@ -188,7 +188,7 @@ class Profile_CCT_AOPublications extends Profile_CCT_Field {
 			'field_id'       => 'aopublication-bookeds',
 			'class'          => 'aopublication-bookeds',
 			'default_text'   => 'Book Editors',
-			'value'       	 => ( ! ( ' ' == $this->data['aopublication-bookeds'] )  ? '' . $this->data['aopublication-bookeds'] : ' ' ),
+			'value'       	 => ( ! ( ' ' === $this->data['aopublication-bookeds'] )  ? '' . $this->data['aopublication-bookeds'] : ' ' ),
 		) );
 
 		$this->display_link( array(
@@ -229,7 +229,7 @@ class Profile_CCT_AOPublications extends Profile_CCT_Field {
 			'field_id'       => 'aopublication-pagenumbers',
 			'class'          => 'aopublication-pagenumbers',
 			'default_text'   => '40-50',
-			'value'       	 => ( ! ( ' ' == $this->data['aopublication-pagenumbers'] )  ? '' . $this->data['aopublication-pagenumbers'] : ' ' ),
+			'value'       	 => ( ! ( ' ' === $this->data['aopublication-pagenumbers'] )  ? '' . $this->data['aopublication-pagenumbers'] : ' ' ),
 		) );
 
 		$this->display_text( array(
