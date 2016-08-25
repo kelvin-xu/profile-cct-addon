@@ -83,7 +83,7 @@ class Profile_CCT_Addon_Shortcodes {
 					}
 				}
 			}
-			set_transient( $this->transient_key , $output_array, 24 * HOUR_IN_SECONDS );
+			set_transient( $this->transient_key , $output_array, DAY_IN_SECONDS );
 		}
 		return $output_array;
 	}
@@ -265,10 +265,12 @@ class Profile_CCT_Addon_Shortcodes {
 	 * @param array $attr Attributes attributed to the shortcode.
 	 */
 	function aolist_masonary( $atts ) {
-		global $allowedposttags;
-		$allowedposttags['div'] = array( 'id' => array(), 'class' => array(), 'data-pcount' => array(), 'data-rcount' => array(), 'data-bcount' => array(), 'data-jcount' => array(), 'data-ccount' => array() );
-		$allowedposttags['p'] = array( 'class' => array() );
-		$allowedposttags['span'] = array( 'class' => array() );
+
+		$allowed_html['div'] = array( 'id' => array(), 'class' => array(), 'data-pcount' => array(), 'data-rcount' => array(), 'data-bcount' => array(), 'data-jcount' => array(), 'data-ccount' => array() );
+		$allowed_html['p'] = array( 'class' => array() );
+		$allowed_html['span'] = array( 'class' => array() );
+		$allowed_html['a'] = array( 'href' => array() );
+		$allowed_html['img'] = array( 'src' => array() );
 
 		$profile = Profile_CCT::get_object();
 		$atts = shortcode_atts( array( 'term' => '', 'class' => 'grid' ), $atts , 'aolist2' );
@@ -339,7 +341,7 @@ class Profile_CCT_Addon_Shortcodes {
 				$output .= '<div id="pgrid'.$pcount.'" data-pcount="'.$pcount.'" data-rcount="'.$rcount.'" data-bcount="'.$bcount.'" data-jcount="'.$jcount.'" data-ccount="'.$ccount.'" class="ao-grid aoprofile'.$pcount.'">'.$ibucket.$items.'</div>';
 				$pcount ++;
 			}
-			return wp_kses_post( $output );
+			return wp_kses( $output, $allowed_html );
 		} else {
 			return 'ERROR - Missing term or ao_taxonomy in shortcode parameter OR no term in taxonomy';
 		}

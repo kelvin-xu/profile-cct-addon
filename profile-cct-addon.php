@@ -247,12 +247,6 @@ class Profile_CCT_Addon {
 		wp_enqueue_script( 'profile-addon-masonary', PROFILE_Addon_CCT_DIR_URL.'/js/masonary.pkgd.min.js' );
 	}
 
-	function custom_posts_join( $join ) {
-			 global $wpdb;
-			 $join .= " LEFT JOIN $wpdb->postmeta ON $wpdb->posts.ID = $wpdb->postmeta.post_id ";
-			 return $join;
-	}
-
 	function get_all_profiles( $pieces, $query ) {
 		global $wpdb;
 		if ( ! is_admin() && $query->is_main_query() && $query->is_tax( $this->extratax ) ) {
@@ -318,7 +312,6 @@ class Profile_CCT_Addon {
 			update_option( 'Profile_CCT_settings', $profile->settings );
 			$note = 'Settings saved.';
 			$profile->register_profiles();
-			flush_rewrite_rules();
 		endif;
 		?>
 		<h2>AO General Settings</h2>
