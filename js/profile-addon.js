@@ -92,7 +92,7 @@ $("#aocourse-code,#aoresearch-pi,#aoresearch-program,#aoresearch-funder,#aoresea
 		}
 
 		if (elem_being_changed == 'aopublication-image'){
-			var photo = jQuery(this).val();//'http://jonathannicol.com/projects/center-and-crop-thumbnail/img/portrait-img.png';		
+			var photo = jQuery(this).val();//'http://jonathannicol.com/projects/center-and-crop-thumbnail/img/portrait-img.png';
 			if (is_portrait(photo))
   				$(this).parent().parent().parent().find('.pubrec .thumbnail').html('<img class="portrait" src=' + photo + '>');
 			else
@@ -129,8 +129,8 @@ $("#aocourse-code,#aoresearch-pi,#aoresearch-program,#aoresearch-funder,#aoresea
 	window.setTimeout(ao_callback(this),0);
     	//window.setTimeout($(this).parent().children('.field').last().find('.pubrec #aopublication-year').text('2020'),0);
   });
-  
-  
+
+
   $( "#aopublication-pagenumbers,#aopublication-bookeds,#aopublication-publisher" ).each(function( index ) {
     	if($.trim($(this).text()) === '') {
    			$(this).html('');
