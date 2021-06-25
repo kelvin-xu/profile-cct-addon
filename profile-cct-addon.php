@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Profile CCT Addon
+ * Plugin Name: Profile CCT Addon(new)
  * Plugin URI: https://github.com/ubc/profile-cct
  * Version: 1.0
  * Description: Adds new field type
