@@ -37,7 +37,7 @@ class Profile_CCT_AOResearch extends Profile_CCT_Field {
 			'field_id' => 'aoresearch-pi',
 			'label'    => 'Principle Investigator',
 			'size'     => 27,
-			'value'    => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
+			'value'    => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ 'name' ][ 'first' ] .' '.$dataarray[0][ 'name' ][ 'middle' ].' '.$dataarray[0][ 'name' ][ 'last' ] ),
 		) );
 
 		$this->input_text( array(
@@ -187,7 +187,7 @@ class Profile_CCT_AOResearch extends Profile_CCT_Field {
 			'field_id'       => 'aoresearch-pi',
 			'class'          => 'aoresearch-pi',
 			'default_text'   => 'Bruce Wayne',
-			'value'       	 => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
+			'value'       	 => ( ! empty( $this->data['aoresearch-pi'] ) ? $this->data['aoresearch-pi'] : $dataarray[0][ 'name' ][ 'first' ] .' '.$dataarray[0][ 'name' ][ 'middle' ].' '.$dataarray[0][ 'name' ][ 'last' ] ),
 			'post_separator' => ' ',
 			'tag'            => 'strong',
 		) );

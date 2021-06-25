@@ -37,7 +37,7 @@ class Profile_CCT_AOPublications extends Profile_CCT_Field {
 			'field_id' => 'aopublication-authors',
 			'label'    => 'Author(s)',
 			'size'     => 23,
-			'value'    => ( ! empty( $this->data['aopublication-authors'] ) ? $this->data['aopublication-authors'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
+			'value'    => ( ! empty( $this->data['aopublication-authors'] ) ? $this->data['aopublication-authors'] : $dataarray[0][ 'name' ][ 'first' ] .' '.$dataarray[0][ 'name' ][ 'middle' ].' '.$dataarray[0][ 'name' ][ 'last' ] ),
 		) );
 
 		$this->input_text( array(
@@ -168,7 +168,7 @@ class Profile_CCT_AOPublications extends Profile_CCT_Field {
 			'field_id'       => 'aopublication-authors',
 			'class'          => 'aopublication-authors',
 			'default_text'   => 'Bruce Wayne',
-			'value'       	 => ( ! empty( $this->data['aopublication-authors'] ) ? $this->data['aopublication-authors'] : $dataarray[0][ name ][ first ] .' '.$dataarray[0][ name ][ middle ].' '.$dataarray[0][ name ][ last ] ),
+			'value'       	 => ( ! empty( $this->data['aopublication-authors'] ) ? $this->data['aopublication-authors'] : $dataarray[0][ 'name' ][ 'first' ] .' '.$dataarray[0][ 'name' ][ 'middle' ].' '.$dataarray[0][ 'name' ][ 'last' ] ),
 			'post_separator' => ' ',
 			'tag'            => 'strong',
 		) );

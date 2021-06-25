@@ -52,11 +52,11 @@ class Profile_CCT_Addon_Shortcodes {
 	 */
 	private function get_taxkey( $taxonomy ) {
 		$profile = Profile_CCT::get_object();
-		if ( ( $taxonomy === $profile->settings['archive']['ao_use_tax'][0] ) || ( $taxonomy === $profile->settings['archive']['ao_use_taxall'][0] ) ) {
-			if ( $taxonomy === $profile->settings['archive']['ao_use_tax'][0] ) {
+		if ( ( $taxonomy === $profile::$settings['archive']['ao_use_tax'][0] ) || ( $taxonomy === $profile::$settings['archive']['ao_use_taxall'][0] ) ) {
+			if ( $taxonomy === $profile::$settings['archive']['ao_use_tax'][0] ) {
 				  return 'terms';
 			}
-			if ( $taxonomy === $profile->settings['archive']['ao_use_taxall'][0] ) {
+			if ( $taxonomy === $profile::$settings['archive']['ao_use_taxall'][0] ) {
 				  return 'themes';
 			}
 		} else {
@@ -188,7 +188,7 @@ class Profile_CCT_Addon_Shortcodes {
 	function ao_tag_cloud_shortcode( $attr ) {
 		if ( $attr['taxonomy'] ) {
 			$profile = Profile_CCT::get_object();
-			if ( ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_tax'][0] ) || ( $attr['taxonomy'] === $profile->settings['archive']['ao_use_taxall'][0] ) ) {
+			if ( ( $attr['taxonomy'] === $profile::$settings['archive']['ao_use_tax'][0] ) || ( $attr['taxonomy'] === $profile::$settings['archive']['ao_use_taxall'][0] ) ) {
 				$this->cloud_taxonomy = $attr['taxonomy'];
 				add_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
 				if ( $attr['number'] ) {
@@ -209,7 +209,7 @@ class Profile_CCT_Addon_Shortcodes {
 				remove_filter( 'wp_generate_tag_cloud_data', array( &$this, 'ao_tag_count' ) );
 				return wp_kses_post( $output );
 			} else {
-				return 'Taxonomy needs to be one of the ones set in AO Settings'.$profile->settings['archive']['ao_use_tax'][0].' or '.$profile->settings['archive']['ao_use_taxall'][0];
+				return 'Taxonomy needs to be one of the ones set in AO Settings'.$profile::$settings['archive']['ao_use_tax'][0].' or '.$profile::$settings['archive']['ao_use_taxall'][0];
 			}
 		} else {
 			return 'You are missing the taxonomy parameter';
@@ -274,9 +274,9 @@ class Profile_CCT_Addon_Shortcodes {
 
 		$profile = Profile_CCT::get_object();
 		$atts = shortcode_atts( array( 'term' => '', 'class' => 'grid' ), $atts , 'aolist2' );
-		if ( $profile->settings['archive']['ao_use_taxall'][0]  ) {
+		if ( $profile::$settings['archive']['ao_use_taxall'][0]  ) {
 			if ( $atts['term'] ) {
-				$term = get_term_by( 'slug', $atts['term'], $profile->settings['archive']['ao_use_taxall'][0] );
+				$term = get_term_by( 'slug', $atts['term'], $profile::$settings['archive']['ao_use_taxall'][0] );
 			}
 		}
 		if ( $term ) {

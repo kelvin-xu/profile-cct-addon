@@ -37,11 +37,11 @@ class Profile_CCT_Addon {
 	function __construct( ) {
 		error_reporting( E_ERROR | E_WARNING | E_PARSE );
 		$profile = Profile_CCT::get_object();
-		if ( array_key_exists( 'ao_use_tax' , $profile->settings['archive'] ) ) {
-			$this->intratax = $profile->settings['archive']['ao_use_tax'][0];
+		if ( is_array( $profile::$settings['archive'] ) && array_key_exists( 'ao_use_tax' , $profile::$settings['archive'] ) ) {
+			$this->intratax = $profile::$settings['archive']['ao_use_tax'][0];
 		}
-		if ( array_key_exists( 'ao_use_taxall' , $profile->settings['archive'] ) ) {
-			$this->extratax = $profile->settings['archive']['ao_use_taxall'][0];
+		if ( is_array( $profile::$settings['archive'] ) && array_key_exists( 'ao_use_taxall' , $profile::$settings['archive'] ) ) {
+			$this->extratax = $profile::$settings['archive']['ao_use_taxall'][0];
 		}
 		ini_set( 'display_errors', 'On' );
 		$this->setup_constants();
@@ -137,12 +137,12 @@ class Profile_CCT_Addon {
 				$profile = Profile_CCT::get_object();
 				$hideclasses = '';
 				if ( $qobj->taxonomy === $this->extratax ) {
-					if ( ! empty( $profile->settings['archive']['ao_display_onextratax'] ) || 'default' === $this->extratax ) {
+					if ( ! empty( $profile::$settings['archive']['ao_display_onextratax'] ) || 'default' === $this->extratax ) {
 							$hideclasses  .= 'hide-extratax';
 					}
 				}
 				if ( $qobj->taxonomy === $this->intratax ) {
-					if ( ! empty( $profile->settings['archive']['ao_display_onintratax'] ) || 'default' === $this->intratax ) {
+					if ( ! empty( $profile::$settings['archive']['ao_display_onintratax'] ) || 'default' === $this->intratax ) {
 						$hideclasses  .= 'hide-intratax';
 					}
 				}
@@ -223,7 +223,7 @@ class Profile_CCT_Addon {
 					} else {
 						$profile = Profile_CCT::get_object();
 						$hideclasses = '';
-						if ( ! empty( $profile->settings['archive']['ao_display_onarchive'] ) ) {
+						if ( ! empty( $profile::$settings['archive']['ao_display_onarchive'] ) ) {
 							$hideclasses  = 'hide-archive';
 						}
 						return '<span class="'.$hideclasses.'">'.$content.'</span>';
@@ -282,7 +282,7 @@ class Profile_CCT_Addon {
 			wp_enqueue_script( 'jquery' );
 			global $post;
 			$dataarray = maybe_unserialize( get_post_meta( $post->ID, 'profile_cct' ) );
-				$name = $dataarray[0][ name ][ last ] .', '.$dataarray[0][ name ][ first ].' '.$dataarray[0][ name ][ middle ];
+				$name = $dataarray[0][ 'name' ][ 'last' ] .', '.$dataarray[0][ 'name' ][ 'first' ].' '.$dataarray[0][ 'name' ][ 'middle' ];
 				wp_enqueue_script( 'profile-addon-script', PROFILE_Addon_CCT_DIR_URL.'/js/profile-addon.js' );
 				wp_localize_script( 'profile-addon-script', 'ao_script_vars',
 					array(
@@ -308,10 +308,10 @@ class Profile_CCT_Addon {
 					}
 				}
 			}
-			$profile->settings['archive'] = $archive;
-			update_option( 'Profile_CCT_settings', $profile->settings );
+			$profile::$settings['archive'] = $archive;
+			update_option( 'Profile_CCT_settings', $profile::$settings );
 			$note = 'Settings saved.';
-			$profile->register_profiles();
+			$profile::register_profiles();
 		endif;
 		?>
 		<h2>AO General Settings</h2>
@@ -329,16 +329,18 @@ class Profile_CCT_Addon {
 									<select id="archive_ao_use_taxall" name="<?php echo 'archive[ao_use_taxall][0]'; ?>">
 										<option value="default">Select a taxonomy to use.</option>
 						<?php
-						foreach ( $profile->taxonomies as $taxonomy ) {
-							if ( $profile->settings['archive']['ao_use_tax'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+						echo 'wtf';
+						var_dump($profile::$taxonomies);
+						foreach ( $profile::$taxonomies as $taxonomy ) {
+							if ( $profile::$settings['archive']['ao_use_tax'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
 								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
 						?>
-										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_taxall'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
+										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile::$settings['archive']['ao_use_taxall'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
 						<?php
 							}
 						}
 						?>
-									</select><br><?php echo esc_html( $profile->settings['archive']['ao_use_taxall'][0] );?>
+									</select><br><?php echo esc_html( $profile::$settings['archive']['ao_use_taxall'][0] );?>
 								</td>
 						</tr>
 						<tr valign="top">
@@ -347,37 +349,37 @@ class Profile_CCT_Addon {
 								<select id="archive_ao_use_tax" name="<?php echo 'archive[ao_use_tax][0]'; ?>">
 										<option value="default">Select a taxonomy to use.</option>
 						<?php
-						foreach ( $profile->taxonomies as $taxonomy ) {
-							if ( $profile->settings['archive']['ao_use_taxall'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
+						foreach ( $profile::$taxonomies as $taxonomy ) {
+							if ( $profile::$settings['archive']['ao_use_taxall'][0] !== Profile_CCT_Taxonomy::id( $taxonomy['single'] ) ) {
 								$taxonomy_id = Profile_CCT_Taxonomy::id( $taxonomy['single'] );
 						?>
-										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile->settings['archive']['ao_use_tax'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
+										<option value="<?php echo esc_html( $taxonomy_id ); ?>" <?php echo esc_html( selected( $profile::$settings['archive']['ao_use_tax'][0], $taxonomy_id, false ) ); ?> ><?php echo esc_html( $taxonomy['plural'] ); ?></option>
 						<?php
 							}
 						}
 						?>
-									</select><br><?php echo esc_html( $profile->settings['archive']['ao_use_tax'][0] );?>
+									</select><br><?php echo esc_html( $profile::$settings['archive']['ao_use_tax'][0] );?>
 								</td>
 						</tr>
 
 							<tr valign="top">
 								<th scope="row"><label for="ao_archive_display">DONT show AO fields on ALL archive pages</label></th>
 								<td>
-										<input type="checkbox" name="archive[ao_display_onarchive]" id="ao_archive_display" value="true" <?php checked( ! empty( $profile->settings['archive']['ao_display_onarchive'] ) ); ?> />
+										<input type="checkbox" name="archive[ao_display_onarchive]" id="ao_archive_display" value="true" <?php checked( ! empty( $profile::$settings['archive']['ao_display_onarchive'] ) ); ?> />
 								</td>
 							</tr>
 
 							<tr valign="top">
-								<th scope="row"><label for="ao_extratax_display">DONT show AO fields on ALL <?php echo esc_html( $profile->settings['archive']['ao_use_taxall'][0] ); ?> taxonomy pages.</label></th>
+								<th scope="row"><label for="ao_extratax_display">DONT show AO fields on ALL <?php echo esc_html( $profile::$settings['archive']['ao_use_taxall'][0] ); ?> taxonomy pages.</label></th>
 								<td>
-										<input type="checkbox" name="archive[ao_display_onextratax]" id="ao_extratax_display" value="true" <?php checked( ! empty( $profile->settings['archive']['ao_display_onextratax'] ) ); ?> />
+										<input type="checkbox" name="archive[ao_display_onextratax]" id="ao_extratax_display" value="true" <?php checked( ! empty( $profile::$settings['archive']['ao_display_onextratax'] ) ); ?> />
 								</td>
 							</tr>
 
 							<tr valign="top">
-								<th scope="row"><label for="ao_intratax_display">DONT show AO fields on ALL <?php echo esc_html( $profile->settings['archive']['ao_use_tax'][0] ); ?> taxonomy pages.</label></th>
+								<th scope="row"><label for="ao_intratax_display">DONT show AO fields on ALL <?php echo esc_html( $profile::$settings['archive']['ao_use_tax'][0] ); ?> taxonomy pages.</label></th>
 								<td>
-										<input type="checkbox" name="archive[ao_display_onintratax]" id="ao_intratax_display" value="true" <?php checked( ! empty( $profile->settings['archive']['ao_display_onintratax'] ) ); ?> />
+										<input type="checkbox" name="archive[ao_display_onintratax]" id="ao_intratax_display" value="true" <?php checked( ! empty( $profile::$settings['archive']['ao_display_onintratax'] ) ); ?> />
 								</td>
 							</tr>
 
